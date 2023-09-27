@@ -26,3 +26,26 @@ Another example would be, you have a bunch of fragments and you don't know which
 ```
 
 
+If the key is found, you'll see this message
+```
+Found match for Key 1 + Key 2 ed25519 {
+  prefix: 36,
+  network: 'centrifuge',
+  displayName: 'Centrifuge Chain',
+  symbols: [ 'CFG' ],
+  decimals: [ 18 ],
+  standardAccount: '*25519',
+  website: 'https://centrifuge.io/',
+  slip44: 747,
+  hasLedgerSupport: true,
+  genesisHash: [
+    '0xb3db41421702df9a7fcac62b53ffeac85f7853cc4e689e0b93aeb3db18c09d82',
+    '0x67dddf2673b69e5f875f6f25277495834398eafd67f492e09f3f3345e003d1b5'
+  ],
+  icon: 'polkadot',
+  isTestnet: false,
+  isIgnored: false
+}
+```
+
+The script also creates a CSV of all the attempted address derivations, and another CSV of the valid 12 word combinations
