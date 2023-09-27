@@ -49,13 +49,13 @@ function findDerivationPathForGoal(
   const allKeys = deriveAllKeyPairs(fragments);
   let rows = [];
   for (const key of allKeys) {
-    const { pair, network, mnemonic, keyType } = key;
+    const { pair, network, mnemonic, keyType, derivationPath } = key;
     try {
       let address = encodeAddress(pair.publicKey, network.prefix);
 
       let result = {
         keyName: mnemonic.name,
-        derivationPath: "",
+        derivationPath,
         keyType,
         network: network.displayName,
         address,
