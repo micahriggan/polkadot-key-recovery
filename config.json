@@ -7,7 +7,9 @@
     },
     {
       "name": "Key 2",
-      "words": "home memory fiscal profit better pony photo sock layer visual wage unaware"
+      "words": "home memory fiscal profit better pony photo sock layer visual wage",
+      "guessLastWord": true,
+      "actualWord": "unaware"
     }
   ]
 }

@@ -1,4 +1,5 @@
 import { validateMnemonic } from "@polkadot/util-crypto/mnemonic/bip39";
+import enWords from "@polkadot/util-crypto/mnemonic/wordlists/en";
 import { Keyring } from "@polkadot/keyring";
 import { encodeAddress } from "@polkadot/util-crypto";
 import { allNetworks } from "@polkadot/networks";
@@ -12,7 +13,7 @@ const writeFile = promisify(fs.writeFile);
 
 interface Config {
   goal: string;
-  fragments: Array<{ name: string; words: string }>;
+  fragments: Array<{ name: string; words: string; guessLastWord?: boolean }>;
 }
 
 interface ReportRow {
@@ -64,6 +65,7 @@ function findDerivationPathForGoal(
 
       if (result.match) {
         console.log("Found match for", mnemonic.name, keyType, network);
+        console.log(mnemonic.words);
         rows = [result].concat(rows);
         return rows;
       } else {
@@ -152,10 +154,31 @@ function deriveLedgerAccounts(
   return pairs;
 }
 
+function guessLastWord(words: string) {
+  let answers = [];
+  for (const word of enWords) {
+    const guess = words + " " + word;
+    if (validateMnemonic(guess)) {
+      console.log({ guess });
+      answers.push(guess);
+    }
+  }
+  return answers;
+}
+
 function combinationsOfMnemonics(fragments: Config["fragments"]) {
   const combinations = {} as { [name: string]: Config["fragments"][0] };
 
   for (let i = 0; i < fragments.length; i++) {
+    console.log("Processing", fragments[i].name);
+    if (fragments[i].guessLastWord) {
+      for (const guess of guessLastWord(fragments[i].words)) {
+        fragments.push({
+          name: fragments[i].name + " + guessLastWord",
+          words: guess,
+        });
+      }
+    }
     const wordsI = fragments[i].words;
     const nameI = fragments[i].name;
     const wordICount = wordsI.split(" ").length;
@@ -175,6 +198,18 @@ function combinationsOfMnemonics(fragments: Config["fragments"]) {
 
       const name = `${nameI} + ${nameJ}`;
       const words = `${wordsI} ${wordsJ}`;
+
+      if (
+        (fragments[i].guessLastWord || fragments[j].guessLastWord) &&
+        !name.includes("guessLastWord")
+      ) {
+        for (const guess of guessLastWord(words)) {
+          fragments.push({
+            name: name + " + guessLastWord",
+            words: guess,
+          });
+        }
+      }
 
       if (validateMnemonic(words)) {
         combinations[name] = {
