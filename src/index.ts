@@ -65,7 +65,7 @@ function findDerivationPathForGoal(
 
       if (result.match) {
         console.log("Found match for", mnemonic.name, keyType, network);
-        console.log(mnemonic.words);
+        console.log("Mnemonic:", mnemonic.words);
         rows = [result].concat(rows);
         return rows;
       } else {
